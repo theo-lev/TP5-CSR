@@ -5,6 +5,7 @@ public class Zone {
 
     private int nbSardine;
     private Requin requin;
+    private ArrayList<PoissonPilote> listPoissonP;
     private int x;
     private int y;
 
@@ -13,13 +14,14 @@ public class Zone {
     Zone(int x, int y) {
         this.x = x;
         this.y = y;
+        this.listPoissonP = new ArrayList<>();
         this.zonesAround = new ArrayList<>();
     }
 
     void initNbSardine() {
         if (!this.requinExist()) {
             Random r = new Random();
-            this.nbSardine = r.nextInt(10);
+            this.nbSardine = r.nextInt(20);
         }
     }
 
@@ -27,8 +29,12 @@ public class Zone {
         this.requin = requin;
     }
 
+    void addPoissonP(PoissonPilote poissonPilote) {
+        this.listPoissonP.add(poissonPilote);
+    }
+
     public String toString() {
-        return "Sardine : " + this.nbSardine + ", Requin : " + this.requinExist();
+        return "Sardine : " + this.nbSardine + ", Requin : " + this.requinExist() + ", PoissonP : " + this.listPoissonP.size();
     }
 
     boolean requinExist() {
@@ -47,7 +53,12 @@ public class Zone {
         this.requin = requin;
         this.requin.setZone(this);
         this.eatSardine();
-        notifyAll();
+        try {
+            Random r = new Random();
+            Thread.sleep(r.nextInt(1000)+1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     synchronized void moveOut() {
@@ -79,4 +90,7 @@ public class Zone {
         return y;
     }
 
+    void removePoissonP(PoissonPilote p) {
+        this.listPoissonP.remove(p);
+    }
 }

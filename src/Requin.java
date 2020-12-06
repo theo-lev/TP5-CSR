@@ -4,12 +4,15 @@ import java.util.Random;
 class Requin extends Thread {
 
     private final int DUREE_VIE = 5;
+    private final int P = 2;
     private int cycle = DUREE_VIE;
     private Zone zone;
     private int id;
+    private ArrayList<PoissonPilote> listPoissonP;
 
     Requin(int id) {
         this.id = id;
+        this.listPoissonP = new ArrayList<>();
     }
 
     void setZone(Zone zone) {
@@ -32,12 +35,30 @@ class Requin extends Thread {
             this.zone = newZone;
 
             System.out.println("Requin : "+id+" movein");
-            this.zone.moveIn(this);
 
-            System.out.println("Requin : "+id+" cycle : "+cycle);
+            this.zone.moveIn(this);
             cycle--;
         }
         this.zone.moveOut();
+
         System.out.println("Requin : "+id+" over");
+    }
+
+    ArrayList<PoissonPilote> getListPoissonP() {
+        return listPoissonP;
+    }
+
+    boolean isNotFull() {
+        return (P - listPoissonP.size()) > 0;
+    }
+
+    synchronized void addPoissonP(PoissonPilote p) {
+        if (this.isNotFull()) {
+            this.listPoissonP.add(p);
+        }
+    }
+
+    private synchronized void removePoissonP(PoissonPilote p) {
+        this.listPoissonP.remove(p);
     }
 }

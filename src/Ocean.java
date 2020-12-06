@@ -4,14 +4,20 @@ import java.util.Random;
 class Ocean {
 
     private final int N = 3;
-    private final int NB_REQUIN = 2;
+    private final int NB_REQUIN = 3;
+    private final int NB_POISSONP = 9;
     private Zone[][] ocean = new Zone[N][N];
     private ArrayList<Requin> listRequin = new ArrayList<>(NB_REQUIN);
+    private ArrayList<PoissonPilote> listPoissonP = new ArrayList<PoissonPilote>(NB_POISSONP);
 
 
     Ocean() {
         for (int i = 0; i < NB_REQUIN; i++ ) {
-            listRequin.add(new Requin(i));
+            this.listRequin.add(new Requin(i));
+        }
+
+        for (int i = 0; i < NB_POISSONP; i++ ) {
+            this.listPoissonP.add(new PoissonPilote());
         }
 
         for (int x = 0; x < N; x++) {
@@ -28,12 +34,18 @@ class Ocean {
 
         this.initRequin();
         this.initSardine();
+        this.initPoissonP();
 
         this.display();
+
+        for (PoissonPilote poissonPilote: this.listPoissonP) {
+            poissonPilote.start();
+        }
 
         for (Requin requin: this.listRequin) {
             requin.start();
         }
+
 
         for (Requin requin: this.listRequin) {
             try {
@@ -43,24 +55,29 @@ class Ocean {
             }
         }
 
+        for (PoissonPilote poissonPilote: this.listPoissonP) {
+            poissonPilote.stop();
+        }
+
+
         this.display();
 
     }
 
     private void initRequin() {
         Random r = new Random();
+        int i = 0;
 
-        ArrayList<Requin> listTemp = new ArrayList<>(listRequin);
-        while (listTemp.size() > 0) {
-            int randomRequin = r.nextInt(listTemp.size());
+        while (i < NB_REQUIN) {
             int x = r.nextInt(N);
             int y = r.nextInt(N);
 
             if (!this.ocean[x][y].requinExist()) {
-                this.ocean[x][y].setRequin(listRequin.get(randomRequin));
-                listRequin.get(randomRequin).setZone(this.ocean[x][y]);
-                listTemp.remove(randomRequin);
+                this.ocean[x][y].setRequin(listRequin.get(i));
+                listRequin.get(i).setZone(this.ocean[x][y]);
+                i++;
             }
+
         }
     }
 
@@ -69,6 +86,21 @@ class Ocean {
             for (int y = 0; y < N; y++) {
                 this.ocean[x][y].initNbSardine();
             }
+        }
+    }
+
+    private void initPoissonP() {
+        Random r = new Random();
+        int i = 0;
+
+        while (i < NB_POISSONP) {
+            int x = r.nextInt(N);
+            int y = r.nextInt(N);
+
+            PoissonPilote p = this.listPoissonP.get(i);
+            this.ocean[x][y].addPoissonP(p);
+            p.setZone(this.ocean[x][y]);
+            i++;
         }
     }
 
