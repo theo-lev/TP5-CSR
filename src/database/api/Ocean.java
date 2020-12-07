@@ -1,14 +1,21 @@
+package database.api;
+
 import java.util.ArrayList;
 import java.util.Random;
 
-class Ocean {
+import backend.PoissonPilote;
+import backend.Requin;
+import backend.Zone;
+
+public class Ocean {
 
     private final int N = 3;
-    private final int NB_REQUIN = 3;
+    private final int NB_REQUIN = 1;
     private final int NB_POISSONP = 9;
     private Zone[][] ocean = new Zone[N][N];
     private ArrayList<Requin> listRequin = new ArrayList<>(NB_REQUIN);
     private ArrayList<PoissonPilote> listPoissonP = new ArrayList<PoissonPilote>(NB_POISSONP);
+    private int idRequin = 0;
 
 
     Ocean() {
@@ -146,4 +153,67 @@ class Ocean {
         return listZone;
     }
 
+    public int getNbRequinEnVie() {
+        int i = 0;
+        for (Requin requin: listRequin) {
+            if (requin.isAlive()) {
+                i++;
+            }
+        }
+        return i;
+    }
+
+    public void addNewShark() {
+        boolean isAdd = false;
+        Random r = new Random();
+
+        Requin requin = new Requin(this.idRequin);
+        this.listRequin.add(requin);
+        this.idRequin++;
+
+        while (!isAdd) {
+            int x = r.nextInt(N);
+            int y = r.nextInt(N);
+            if (!this.ocean[x][y].requinExist()) {
+                this.ocean[x][y].setRequin(requin);
+                isAdd = true;
+            }
+        }
+
+        requin.start();
+        try {
+            requin.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public ArrayList<Requin> getListRequin() {
+        return listRequin;
+    }
+
+    public Requin getSharkById(int sharkId) {
+        for (Requin r: this.listRequin) {
+            if (r.getId() == sharkId) {
+                return r;
+            }
+        }
+        return null;
+    }
+
+    public Zone getZoneById(String zoneId) {
+        for (Zone[] zone : this.ocean) {
+            for (Zone zone1: zone) {
+                if (zone1.getId().equals(zoneId)) {
+                    return zone1;
+                }
+            }
+        }
+        return null;
+    }
+
+    public Zone[][] getOcean() {
+        return ocean;
+    }
 }
