@@ -1,4 +1,4 @@
-package backend;
+package org.inria.restlet.mta.backend;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -18,8 +18,8 @@ public class Zone {
         this.x = x;
         this.y = y;
         this.id = x + y +"";
-        this.listPoissonP = new ArrayList<>();
-        this.zonesAround = new ArrayList<>();
+        this.listPoissonP = new ArrayList<PoissonPilote>();
+        this.zonesAround = new ArrayList<Zone>();
     }
 
     public void initNbSardine() {
@@ -34,11 +34,12 @@ public class Zone {
     }
 
     public void addPoissonP(PoissonPilote poissonPilote) {
+
         this.listPoissonP.add(poissonPilote);
     }
 
     public String toString() {
-        return "Sardine : " + this.nbSardine + ", backend.Requin : " + this.requinExist() + ", PoissonP : " + this.listPoissonP.size();
+        return "Sardine : " + this.nbSardine + ", org.inria.restlet.mta.backend.Requin : " + this.requinExist() + ", PoissonP : " + this.listPoissonP.size();
     }
 
     public boolean requinExist() {
@@ -48,7 +49,7 @@ public class Zone {
     synchronized void moveIn(Requin requin) {
         if (this.requinExist()) {
             try {
-                System.out.println("backend.Requin " + Thread.currentThread().getName() + " wait in zone " + this.getX() + " " +this.getY());
+                System.out.println("org.inria.restlet.mta.backend.Requin " + Thread.currentThread().getName() + " wait in zone " + this.getX() + " " +this.getY());
                 wait();
             } catch (InterruptedException e) {
                 e.printStackTrace();
@@ -64,8 +65,8 @@ public class Zone {
         notifyAll();
     }
 
-    synchronized void goOnRequin(PoissonPilote poissonPilote) {
-        if (!this.requinExist() || (this.requinExist() && !this.requin.isNotFull())) {
+    synchronized Requin waitRequin() {
+        if (!this.requinExist()) {
             try {
                 System.out.println(Thread.currentThread().getName() + " wait in zone " + this.getX() + " " +this.getY());
                 wait();
@@ -73,13 +74,7 @@ public class Zone {
                 e.printStackTrace();
             }
         }
-        System.out.println(poissonPilote.getName() + " monte");
-        this.requin.addPoissonP(poissonPilote);
-        this.removePoissonP(poissonPilote);
-        poissonPilote.setZonePrec(poissonPilote.getZone());
-        poissonPilote.setZone(null);
-        poissonPilote.setRequin(this.requin);
-
+        return requin;
     }
 
     synchronized void eatSardine() {
@@ -92,7 +87,7 @@ public class Zone {
         notifyAll();
         try {
             Random r = new Random();
-            Thread.sleep(r.nextInt(1000)+1000);
+            Thread.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -124,5 +119,9 @@ public class Zone {
 
     public int getNbSardine() {
         return nbSardine;
+    }
+
+    public Requin getRequin() {
+        return requin;
     }
 }

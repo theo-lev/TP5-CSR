@@ -1,6 +1,6 @@
-package main;
+package org.inria.restlet.mta.main;
 
-import org.inria.restlet.mta.application.MyTwitterApplication;
+import org.inria.restlet.mta.application.MyOceanApplication;
 import org.inria.restlet.mta.backend.Backend;
 import org.restlet.Application;
 import org.restlet.Component;
@@ -34,12 +34,12 @@ public final class Main
         Context context = component.getContext().createChildContext();
         component.getServers().add(Protocol.HTTP, 8124);
 
-        // Create an application
-        Application application = new MyTwitterApplication(context);
+        // Create an org.inria.restlet.mta.application
+        Application application = new MyOceanApplication(context);
 
-        // Add the backend into component's context
+        // Add the org.inria.restlet.mta.backend into component's context
         Backend backend = new Backend();
-        context.getAttributes().put("backend", backend);
+        context.getAttributes().put("src/org/inria/restlet/mta/backend", backend);
         component.getDefaultHost().attach(application);
 
         // Start the component

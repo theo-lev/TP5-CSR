@@ -1,11 +1,11 @@
-package database.api;
+package org.inria.restlet.mta.database.api;
+
+import org.inria.restlet.mta.backend.PoissonPilote;
+import org.inria.restlet.mta.backend.Requin;
+import org.inria.restlet.mta.backend.Zone;
 
 import java.util.ArrayList;
 import java.util.Random;
-
-import backend.PoissonPilote;
-import backend.Requin;
-import backend.Zone;
 
 public class Ocean {
 
@@ -13,15 +13,15 @@ public class Ocean {
     private final int NB_REQUIN = 1;
     private final int NB_POISSONP = 9;
     private Zone[][] ocean = new Zone[N][N];
-    private ArrayList<Requin> listRequin = new ArrayList<>(NB_REQUIN);
+    private ArrayList<Requin> listRequin = new ArrayList<Requin>(NB_REQUIN);
     private ArrayList<PoissonPilote> listPoissonP = new ArrayList<PoissonPilote>(NB_POISSONP);
     private int idRequin = 0;
 
 
-    Ocean() {
-        for (int i = 0; i < NB_REQUIN; i++ ) {
-            this.listRequin.add(new Requin(i));
-        }
+    public Ocean() {
+//        for (int i = 0; i < NB_REQUIN; i++ ) {
+//            this.listRequin.add(new Requin(i));
+//        }
 
         for (int i = 0; i < NB_POISSONP; i++ ) {
             this.listPoissonP.add(new PoissonPilote());
@@ -39,7 +39,7 @@ public class Ocean {
             }
         }
 
-        this.initRequin();
+//        this.initRequin();
         this.initSardine();
         this.initPoissonP();
 
@@ -48,23 +48,23 @@ public class Ocean {
         for (PoissonPilote poissonPilote: this.listPoissonP) {
             poissonPilote.start();
         }
+//
+//        for (Requin requin: this.listRequin) {
+//            requin.start();
+//        }
 
-        for (Requin requin: this.listRequin) {
-            requin.start();
-        }
 
+//        for (Requin requin: this.listRequin) {
+//            try {
+//                requin.join();
+//            } catch (InterruptedException e) {
+//                e.printStackTrace();
+//            }
+//        }
 
-        for (Requin requin: this.listRequin) {
-            try {
-                requin.join();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        for (PoissonPilote poissonPilote: this.listPoissonP) {
-            poissonPilote.stop();
-        }
+//        for (PoissonPilote poissonPilote: this.listPoissonP) {
+//            poissonPilote.stop();
+//        }
 
 
         this.display();
@@ -121,7 +121,7 @@ public class Ocean {
     }
 
     private ArrayList<Zone> getZoneAround(Zone zone) {
-        ArrayList<Zone> listZone = new ArrayList<>();
+        ArrayList<Zone> listZone = new ArrayList<Zone>();
         int x = zone.getX();
         int y = zone.getY();
 

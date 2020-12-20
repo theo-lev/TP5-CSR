@@ -1,9 +1,8 @@
-package backend;
+package org.inria.restlet.mta.backend;
 
 public class PoissonPilote extends Thread{
     private final int DUREE_VIE = 6;
     private Zone zone;
-    private Zone zonePrec;
     private Requin requin;
 
     public PoissonPilote() {
@@ -13,10 +12,19 @@ public class PoissonPilote extends Thread{
     public void run() {
         int i = 0;
         while (i < DUREE_VIE) {
-            this.zone.goOnRequin(this);
-            this.requin.goOffRequin(this);
-            i++;
+            Requin requin = this.zone.waitRequin();
+            if (requin != null) {
+                boolean b = requin.goOnRequin(this);
+                if (b) {
+                    this.zone.removePoissonP(this);
+                    this.requin.goOffRequin(this);
+                    i++;
+                } else {
+                    this.zone.addPoissonP(this);
+                }
+            }
         }
+        System.out.println("Poisson meurt");
         this.zone.removePoissonP(this);
     }
 
@@ -30,13 +38,5 @@ public class PoissonPilote extends Thread{
 
     void setRequin(Requin requin) {
         this.requin = requin;
-    }
-
-    void setZonePrec(Zone zone) {
-        this.zonePrec = zone;
-    }
-
-    Zone getZonePrec() {
-        return zonePrec;
     }
 }

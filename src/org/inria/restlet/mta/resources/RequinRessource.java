@@ -1,7 +1,7 @@
-package resources;
+package org.inria.restlet.mta.resources;
 
-import backend.Requin;
-import database.api.Ocean;
+import org.inria.restlet.mta.backend.Requin;
+import org.inria.restlet.mta.database.api.Ocean;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.restlet.ext.json.JsonRepresentation;

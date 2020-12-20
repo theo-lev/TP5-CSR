@@ -1,12 +1,11 @@
-package application;
+package org.inria.restlet.mta.application;
 
-import backend.Requin;
 import org.restlet.Application;
 import org.restlet.Context;
 import org.restlet.Restlet;
 import org.restlet.routing.Router;
-import resources.RequinRessource;
-import resources.ZoneRessource;
+import org.inria.restlet.mta.resources.RequinRessource;
+import org.inria.restlet.mta.resources.ZoneRessource;
 
 public class MyOceanApplication extends Application {
 

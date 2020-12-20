@@ -1,4 +1,4 @@
-package backend;
+package org.inria.restlet.mta.backend;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -14,7 +14,7 @@ public class Requin extends Thread {
 
     public Requin(int id) {
         this.id = id;
-        this.listPoissonP = new ArrayList<>();
+        this.listPoissonP = new ArrayList<PoissonPilote>();
     }
 
     public void setZone(Zone zone) {
@@ -22,7 +22,7 @@ public class Requin extends Thread {
     }
 
     @Override
-    synchronized public void run() {
+    public void run() {
         while (cycle > 0) {
             ArrayList<Zone> zonesAround = this.zone.getZonesAround();
 
@@ -30,34 +30,41 @@ public class Requin extends Thread {
             int i = random.nextInt(zonesAround.size());
 
             Zone newZone = zonesAround.get(i);
-            System.out.println("backend.Requin : "+id+" moveout");
+            System.out.println("Requin : "+id+" moveout");
 
             this.zone.moveOut();
 
             this.zone = newZone;
 
-            System.out.println("backend.Requin : "+id+" movein");
+            System.out.println("Requin : "+id+" movein");
+            newZone.moveIn(this);
+            this.zone = newZone;
 
-            this.zone.moveIn(this);
-            System.out.println("backend.Requin : "+id+" in zone "+ this.zone.getX() + " " + this.zone.getY());
-            notifyAll();
+            System.out.println("Requin : "+id+" in zone "+ this.zone.getX() + " " + this.zone.getY());
+            notifierPoisson();
+
             this.zone.eatSardine();
             cycle--;
         }
-//        this.zone.moveOut();
+        notifierPoisson();
+        this.zone.moveOut();
 
-        System.out.println("backend.Requin : "+id+" over");
+        System.out.println("Requin : "+id+" over");
+    }
+
+    synchronized private void notifierPoisson() {
+        notifyAll();
     }
 
     ArrayList<PoissonPilote> getListPoissonP() {
         return listPoissonP;
     }
 
-    boolean isNotFull() {
-        return listPoissonP.size() < 2;
+    private synchronized boolean isNotFull() {
+        return listPoissonP.size() < P;
     }
 
-    void addPoissonP(PoissonPilote p) {
+    private void addPoissonP(PoissonPilote p) {
         if (this.isNotFull()) {
             this.listPoissonP.add(p);
         }
@@ -68,18 +75,29 @@ public class Requin extends Thread {
     }
 
     synchronized void goOffRequin(PoissonPilote poissonPilote) {
-        if (this.zone == null || (this.zone.equals(poissonPilote.getZonePrec()))) {
-            try {
-                System.out.println(Thread.currentThread().getName() + " wait in on requin");
-                wait();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
+        if (this.zone == null || this.zone == poissonPilote.getZone()) {
+                try {
+                    System.out.println(Thread.currentThread().getName() + " wait in on requin");
+                    wait();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
         }
         System.out.println(poissonPilote.getName() + " descend");
         poissonPilote.setZone(this.zone);
         this.zone.addPoissonP(poissonPilote);
         this.removePoissonP(poissonPilote);
+    }
+
+    synchronized boolean goOnRequin(PoissonPilote poissonPilote) {
+        if (this.isNotFull()) {
+            System.out.println(poissonPilote.getName() + " monte sur requin " + this.getId());
+            this.addPoissonP(poissonPilote);
+            poissonPilote.setRequin(this);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public Zone getZone() {
