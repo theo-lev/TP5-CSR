@@ -1,6 +1,6 @@
 package org.inria.restlet.mta.backend;
 
-import org.inria.restlet.mta.database.api.Ocean;
+import org.inria.restlet.mta.database.api.OceanImpl;
 
 /**
  *
@@ -14,13 +14,13 @@ public class Backend {
     /**
      * Database.
      */
-    private Ocean database_;
+    private OceanImpl database_;
 
     public Backend() {
-        database_ = new Ocean();
+        database_ = new OceanImpl();
     }
 
-    public Ocean getDatabase() {
+    public OceanImpl getDatabase() {
         return database_;
     }
 }

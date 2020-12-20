@@ -39,7 +39,7 @@ public final class Main
 
         // Add the org.inria.restlet.mta.backend into component's context
         Backend backend = new Backend();
-        context.getAttributes().put("src/org/inria/restlet/mta/backend", backend);
+        context.getAttributes().put("backend", backend);
         component.getDefaultHost().attach(application);
 
         // Start the component

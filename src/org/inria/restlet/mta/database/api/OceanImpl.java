@@ -3,11 +3,12 @@ package org.inria.restlet.mta.database.api;
 import org.inria.restlet.mta.backend.PoissonPilote;
 import org.inria.restlet.mta.backend.Requin;
 import org.inria.restlet.mta.backend.Zone;
+import org.inria.restlet.mta.database.Ocean;
 
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Ocean {
+public class OceanImpl implements Ocean {
 
     private final int N = 3;
     private final int NB_REQUIN = 1;
@@ -18,7 +19,7 @@ public class Ocean {
     private int idRequin = 0;
 
 
-    public Ocean() {
+    public OceanImpl() {
 //        for (int i = 0; i < NB_REQUIN; i++ ) {
 //            this.listRequin.add(new Requin(i));
 //        }
@@ -153,6 +154,7 @@ public class Ocean {
         return listZone;
     }
 
+    @Override
     public int getNbRequinEnVie() {
         int i = 0;
         for (Requin requin: listRequin) {
@@ -163,6 +165,7 @@ public class Ocean {
         return i;
     }
 
+    @Override
     public void addNewShark() {
         boolean isAdd = false;
         Random r = new Random();
@@ -193,6 +196,7 @@ public class Ocean {
         return listRequin;
     }
 
+    @Override
     public Requin getSharkById(int sharkId) {
         for (Requin r: this.listRequin) {
             if (r.getId() == sharkId) {
@@ -202,6 +206,7 @@ public class Ocean {
         return null;
     }
 
+    @Override
     public Zone getZoneById(String zoneId) {
         for (Zone[] zone : this.ocean) {
             for (Zone zone1: zone) {
@@ -215,5 +220,17 @@ public class Ocean {
 
     public Zone[][] getOcean() {
         return ocean;
+    }
+
+    @Override
+    public int getTunas() {
+        int total = 0;
+
+        for (Zone[] zone: this.ocean) {
+            for (Zone zone1: zone) {
+                total += zone1.getNbSardine();
+            }
+        }
+        return total;
     }
 }

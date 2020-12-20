@@ -1,8 +1,8 @@
-import org.inria.restlet.mta.database.api.Ocean;
+import org.inria.restlet.mta.database.api.OceanImpl;
 
 public class Main {
 
     public static void main(String[] args) {
-        Ocean ocean = new Ocean();
+        OceanImpl oceanImpl = new OceanImpl();
     }
 }
